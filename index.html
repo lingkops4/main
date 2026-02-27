@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>ba ver2.4</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人作品集 | 數位藝術家與開發者</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+<!-- GSAP 動畫庫 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#FF2A6D',
+          secondary: '#05D9E8',
+          dark: '#0F0F1A',
+          light: '#F1F1F1',
+          accent: '#D300C5',
+          neonBlue: '#00F0FF',
+          neonPink: '#FF00C1',
+          neonPurple: '#9D00FF'
+        },
+        fontFamily: {
+          orbitron: ['Orbitron', 'sans-serif'],
+          rajdhani: ['Rajdhani', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: #0F0F1A;
+    color: #F1F1F1;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glass-dark {
+    background: rgba(15, 15, 26, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .neon-text-blue {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00F0FF, 0 0 20px #00F0FF, 0 0 25px #00F0FF;
+  }
+
+  .neon-text-pink {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #FF00C1, 0 0 20px #FF00C1, 0 0 25px #FF00C1;
+  }
+
+  .neon-text-purple {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #9D00FF, 0 0 20px #9D00FF, 0 0 25px #9D00FF;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%);
+  }
+
+  .hover-scale {
+    transition: transform 0.3s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  @keyframes float-slow {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-15px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .float-fast {
+    animation: float-fast 4s ease-in-out infinite;
+  }
+
+  @keyframes float-fast {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-25px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .neon-border-blue {
+    box-shadow: 0 0 5px #00F0FF, 0 0 10px #00F0FF;
+  }
+
+  .neon-border-pink {
+    box-shadow: 0 0 5px #FF00C1, 0 0 10px #FF00C1;
+  }
+
+  .neon-border-purple {
+    box-shadow: 0 0 5px #9D00FF, 0 0 10px #9D00FF;
+  }
+
+  #canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+
+  .card-3d:hover {
+    transform: rotateY(10deg) rotateX(5deg);
+  }
+
+  .card-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateZ(-1px);
+  }
+
+  .video-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+  }
+
+  .video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .video-container:hover video {
+    transform: scale(1.1);
+  }
+
+  .nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #00F0FF;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .active-nav::after {
+    width: 100%;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    overflow: auto;
+  }
+
+  .modal-content {
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 滾動條樣式 */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0F0F1A;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #00F0FF;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FF00C1;
+  }
+</style>
+</head>
+
+<body class="gradient-bg">
+  <!-- 背景畫布 -->
+  <div id="canvas-container"></div>
+
+  <!-- 導覽列 -->
+  <nav class="fixed top-0 left-0 w-full z-50 glass-dark">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex justify-between items-center">
+        <a href="#" class="text-2xl font-bold neon-text-blue">💠⚜️Lingko⚜️💠</a>
+
+        <!-- 桌面導覽 -->
+        <div class="hidden md:flex space-x-8">
+          <a href="#home" class="nav-link active-nav">首頁</a>
+          <a href="#gallery" class="font-bold neon-text-pink">畫廊</a>
+          <a href="#tools" class="nav-link">工具</a>
+          <a href="#websites" class="font-bold neon-text-blue">網站作品</a>
+          <a href="#webui" class="nav-link">WebUI應用</a>
+          <a href="#youtube" class="font-bold neon-text-pink">YouTube</a>
+          <a href="#about" class=" font-bold neon-text-">關於我</a>
+        </div>
+
+        <!-- 行動端導覽切換 -->
+        <div class="block md:hidden">
+          <button id="mobile-menu-button" class="text-2xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 行動端導覽選單 -->
+      <div id="mobile-menu" class="hidden mobile-menu flex-col space-y-4 py-4 mt-2 glass-dark rounded-lg">
+        <a href="#home" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">首頁</a>
+        <a href="#gallery" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">畫廊</a>
+        <a href="#tools" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">工具</a>
+        <a href="#websites" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">網站作品</a>
+        <a href="#webui" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">WebUI應用</a>
+        <a href="#youtube" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">YouTube</a>
+        <a href="#about" class="block py-2 px-4 hover:bg-opacity-20 hover:bg-white rounded">關於我</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 首頁部分 -->
+  <section id="home" class="min-h-screen pt-24 pb-16">
+    <div class="container mx-auto px-24">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+          <h1 class="text-5xl md:text-7x1 font-bold mb-6">
+            <span class="neon-text-pink">數位x</span>
+            <span class="neon-text-blue">藝術家</span>
+          </h1>
+          <p class="text-xl mb-8 max-w-lg">
+            不專注於創作視覺衝擊力強的數位藝術作品和創新的Web應用程式，融合霓虹美學與現代無技術，亂打造不獨特的視覺體驗。
+          </p>
+          <div class="flex space-x-4">
+            <a href="#gallery" class="px-8 py-3 bg-primary hover:bg-opacity-80 rounded-full transition duration-300 hover:shadow-lg hover:shadow-primary/30">
+              瀏覽作品
+            </a>
+            <a href="#about" class="px-8 py-3 glass hover:bg-opacity-30 rounded-full transition duration-300">
+              了解更多
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center">
+          <div class="md:w-1/2 flex justify-center">
+            <video src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771788500/Djbig_kxfan1.mp4" autoplay muted loop playsinline class="w-full max-w-md rounded-2xl shadow-2xl float hover-scale">
+              你的瀏覽器不支援播放此影片，不是我的問題找都我無用😅。
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <!-- 社群媒體連結 -->
+      <div class="flex justify-center mt-16 space-x-8">
+        <a href="#" class="text-2xl hover:text-neonBlue transition duration-300">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="text-2xl hover:text-neonBlue transition duration-300">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="text-2xl hover:text-neonBlue transition duration-300">
+          <i class="fa-brands fa-galactic-senate"></i>
+        </a>
+        <a href="#" class="text-2xl" hover:text-neonBlue transition duration-300"">
+          <i class="fa-brands fa-playstation"></i>
+        </a>
+
+        <a href="#" class="text-2xl" hover:text-neonBlue transition duration-300"">
+          <i class="fa-brands fa-square-steam"></i>
+        </a>
+
+        <a href="#" class="text-2xl hover:text-neonBlue transition duration-300">
+          <i class="fa-brands fa-square-facebook"></i>
+        </a>
+
+        <a href="#" class="text-2xl hover:text-neonBlue transition duration-300">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+
+  </section>
+  <iframe width="100%" height="120" src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&hide_artwork=1&autoplay=1&feed=%2Fjunyan-lo%2Fdj-y-2k26-mx-%25E5%25A5%25BD%25E9%25A5%25BF%25E5%25A5%25BD%25E9%25A5%25BF%25E5%25A5%25BD%25E9%25A5%25BF%25E4%25B8%2593%25E5%25B1%259E%25E5%25BF%25AB%25E6%2591%2587-%25E6%259C%2589%25E4%25B8%2580%25E7%25A7%258D%25E7%2588%25B1%25E5%258F%25AB%25E5%2581%259A%25E6%2594%25BE%25E6%2589%258B-x-%25E5%25A4%259A%25E6%2583%2585%25E7%259A%2584%25E4%25BA%25BA%25E6%2580%25BB%25E8%25A2%25AB%25E6%2597%25A0%25E6%2583%2585%25E7%259A%2584%25E4%25BC%25A4-x-%25E9%25A2%2584%25E8%25B0%258B%2F" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;"></iframe>
+  <video src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771977344/hot_dj_rain_tax1tf.mp4" autoplay muted loop playsinline class="w-full max-w-md rounded-2xl shadow-2xl float hover-scale" margin: 40; padding: 40;>
+    <!-- 呢句嘢平時係隱藏嘅，唔使理佢 -->
+    你的瀏覽器不支援播放此影片。
+
+  </video>
+
+  <!-- 畫廊部分 -->
+  <section id="gallery" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-blue">數位畫廊</h2>
+
+      <!-- 畫廊分類標籤 -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button class="gallery-filter active px-6 py-2 glass rounded-full hover:bg-opacity-30 transition duration-300 neon-border-blue" data-filter="all">全部</button>
+        <button class="gallery-filter px-6 py-2 glass rounded-full hover:bg-opacity-30 transition duration-300" data-filter="digital-art">數位藝術</button>
+        <button class="gallery-filter px-6 py-2 glass rounded-full hover:bg-opacity-30 transition duration-300" data-filter="concept-art">概念設計</button>
+        <button class="gallery-filter px-6 py-2 glass rounded-full hover:bg-opacity-30 transition duration-300" data-filter="3d">3D作品</button>
+        <button class="gallery-filter px-6 py-2 glass rounded-full hover:bg-opacity-30 transition duration-300" data-filter="photography">攝影</button>
+      </div>
+
+      <!-- 畫廊網格 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 畫廊項目 1 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="digital-art">
+          <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/42023e63989742ea8391d02ac4c4efb3~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462840&x-signature=ZR%2BJ8kLg5y1f%2FxilIzZV7ZAFDnE%3D" alt="數位藝術" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-pink">霓虹畫廊</h3>
+            <p class="text-sm text-gray-300">數位藝術 • 2023</p>
+          </div>
+        </div>
+
+        <!-- 畫廊項目 2 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="concept-art">
+          <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/fb4a47939a134506b339399c9727b5c8~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462825&x-signature=%2FkgRejagWlM0wAFZTDoXN186v%2Fc%3D" alt="概念設計" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-blue">賽博朋克角色</h3>
+            <p class="text-sm text-gray-300">概念設計 • 2023</p>
+          </div>
+        </div>
+
+        <!-- 畫廊項目 3 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="3d">
+          <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/abcac539a8764d508db14d6487f6246d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462857&x-signature=u3NmQ0dLwQsrxTOgEzaqFu1q4lg%3D" alt="3D作品" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-purple">未來介面</h3>
+            <p class="text-sm text-gray-300">3D作品 • 2023</p>
+          </div>
+        </div>
+
+        <!-- 畫廊項目 4 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="digital-art">
+          <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/42023e63989742ea8391d02ac4c4efb3~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462840&x-signature=ZR%2BJ8kLg5y1f%2FxilIzZV7ZAFDnE%3D" alt="數位藝術" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-pink">霓虹空間</h3>
+            <p class="text-sm text-gray-300">數位藝術 • 2023</p>
+          </div>
+        </div>
+
+        <!-- 畫廊項目 5 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="photography">
+          <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/fb4a47939a134506b339399c9727b5c8~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462825&x-signature=%2FkgRejagWlM0wAFZTDoXN186v%2Fc%3D" alt="攝影" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-blue">數位人像</h3>
+            <p class="text-sm text-gray-300">攝影 • 2023</p>
+          </div>
+        </div>
+
+        <!-- 畫廊項目 6 -->
+        <div class="gallery-item card-3d relative glass rounded-2xl overflow-hidden hover-scale" data-category="3d">
+          <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/abcac539a8764d508db14d6487f6246d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462857&x-signature=u3NmQ0dLwQsrxTOgEzaqFu1q4lg%3D" alt="3D作品" class="w-full h-64 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-0 hover:opacity-100 transition duration-300 flex flex-col justify-end p-6">
+            <h3 class="text-xl font-bold neon-text-purple">數據視覺化</h3>
+            <p class="text-sm text-gray-300">3D作品 • 2023</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 載入更多按鈕 -->
+      <div class="mt-12 text-center">
+        <button id="load-more-gallery" class="px-8 py-4 glass hover:bg-opacity-30 rounded-full transition duration-300 font-bold">
+          載入更多作品
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工具部分 -->
+  <section id="tools" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-pink">實用工具</h2>
+
+      <!-- 工具卡片網格 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 工具卡片 1 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-16 h-16 rounded-full bg-neonBlue bg-opacity-20 flex items-center justify-center mb-6 neon-border-blue">
+            <i class="fas fa-image text-2xl text-neonBlue"></i>
+          </div>
+          <h3 class="text-xl font-bold mb -4 neon-text-blue">圖像轉換器</h3>
+          <p class="text-gray-300 mb-6">
+            一個強大的線上工具，可以將各種圖像格式相互轉換，並提供基本的圖像編輯功能。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold">
+            <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/6.5.1/gradio.js"></script>
+
+            <gradio-app src="https://lingkoai-sdxl-turbo.hf.space"></gradio-app>
+            🔼🔼🔼⬆️ 使用工具 🔼⬆️⬆️🔼 <i class="text-center neon-text-bluefas-arrow-up "></i>
+          </a>
+        </div>
+
+        <!-- 工具卡片 2 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/6.5.1/gradio.js"></script>
+
+          <gradio-app src="https://lingkoai-sdxl-turbo.hf.space"></gradio-app>
+
+          <div class="w-16 h-16 rounded-full bg-neonPink bg-opacity-20 flex items-center justify-center mb-6 neon-border-pink">
+            <i class="fas fa-code text-2xl text-neonPink"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-pink">程式碼格式化</h3>
+          <p class="text-gray-300 mb-6">
+            支援多種程式語言的程式碼格式化工具，幫助開發者保持程式碼風格一致，提高程式碼可讀性。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonPink bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPink font-bold">
+            使用工具 <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+
+        <!-- 工具卡片 3 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-16 h-16 rounded-full bg-neonPurple bg-opacity-20 flex items-center justify-center mb-6 neon-border-purple">
+            <i class="fas fa-calculator text-2xl text-neonPurple"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-purple">開發者計算器</h3>
+          <p class="text-gray-300 mb-6">
+            專為開發者設計的計算器，支援進位轉換、單位換算和各種程式設計相關的計算功能。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonPurple bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPurple font-bold">
+            使用工具 <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+
+        <!-- 工具卡片 4 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-16 h-16 rounded-full bg-neonBlue bg-opacity-20 flex items-center justify-center mb-6 neon-border-blue">
+            <i class="fas fa-file-code text-2xl text-neonBlue"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-blue">JSON解析器</h3>
+          <p class="text-gray-300 mb-6">
+            線上JSON解析和格式化工具，支援語法高亮、錯誤檢查和JSON數據的視覺化展示。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold">
+            使用工具 <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+
+        <!-- 工具卡片 5 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-16 h-16 rounded-full bg-neonPink bg-opacity-20 flex items-center justify-center mb-6 neon-border-pink">
+            <i class="fas fa-lock text-2xl text-neonPink"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-pink">密碼產生器</h3>
+          <p class="text-gray-300 mb-6">
+            安全的密碼產生工具，可以建立高強度密碼，並提供密碼強度分析和儲存建議。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonPink bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPink font-bold">
+            使用工具 <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+
+        <!-- 工具卡片 6 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-16 h-16 rounded-full bg-neonPurple bg-opacity-20 flex items-center justify-center mb-6 neon-border-purple">
+            <i class="fas fa-chart-line text-2xl text-neonPurple"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-purple">數據視覺化</h3>
+          <p class="text-gray-300 mb-6">
+            將CSV或JSON數據轉換為互動式圖表，支援多種圖表類型和自訂配置選項。
+          </p>
+          <a href="#" class="inline-block px-6 py-2 bg-neonPurple bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPurple font-bold">
+            使用工具 <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 網站作品部分 -->
+  <section id="websites" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-purple">網站作品</h2>
+
+      <!-- 網站作品卡片網格 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <!-- 網站作品卡片 1 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative h-64">
+            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/abcac539a8764d508db14d6487f6246d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462857&x-signature=u3NmQ0dLwQsrxTOgEzaqFu1q4lg%3D" alt="網站作品" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent flex flex-col justify-end p-6">
+              <span class="px-3 py-1 bg-neonBlue bg-opacity-20 rounded-full text-sm text-neonBlue mb-2">響應式設計</span>
+              <h3 class="text-xl font-bold neon-text-blue">現代儀表板</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-6">
+              為科技公司設計的現代化管理儀表板，採用玻璃態設計風格，整合數據視覺化和用戶管理功能。
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="px-3 py-1 glass rounded-full text-xs">HTML5</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">CSS3</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Chart.js</span>
+            </div>
+            <div class="flex space-x-4">
+              <a href="#" class="px-6 py-2 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold flex-1 text-center">
+                查看演示
+              </a>
+              <a href="#" class="px-6 py-2 glass hover:bg-opacity-30 rounded-lg transition duration-300 flex-1 text-center">
+                查看程式碼
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 網站作品卡片 2 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative h-64">
+            <img src="https://p6-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/42023e63989742ea8391d02ac4c4efb3~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462840&x-signature=ZR%2BJ8kLg5y1f%2FxilIzZV7ZAFDnE%3D" alt="網站作品" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent flex flex-col justify-end p-6">
+              <span class="px-3 py-1 bg-neonPink bg-opacity-20 rounded-full text-sm text-neonPink mb-2">電商網站</span>
+              <h3 class="text-xl font-bold neon-text-pink">藝術畫廊商店</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-6">
+              為數位藝術家打造的線上商店，展示和銷售數位藝術作品，支援加密貨幣支付和NFT整合。
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="px-3 py-1 glass rounded-full text-xs">React</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Node.js</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">MongoDB</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Web3.js</span>
+            </div>
+            <div class="flex space-x-4">
+              <a href="#" class="px-6 py-2 bg-neonPink bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPink font-bold flex-1 text-center">
+                查看演示
+              </a>
+              <a href="#" class="px-6 py-2 glass hover:bg-opacity-30 rounded-lg transition duration-300 flex-1 text-center">
+                查看程式碼
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 網站作品卡片 3 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative h-64">
+            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/fb4a47939a134506b339399c9727b5c8~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462825&x-signature=%2FkgRejagWlM0wAFZTDoXN186v%2Fc%3D" alt="網站作品" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent flex flex-col justify-end p-6">
+              <span class="px-3 py-1 bg-neonPurple bg-opacity-20 rounded-full text-sm text-neonPurple mb-2">個人品牌</span>
+              <h3 class="text-xl font-bold neon-text-purple">創作者作品集</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-6">
+              為數位內容創作者設計的作品集網站，支援多媒體內容展示、部落格和粉絲互動功能。
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="px-3 py-1 glass rounded-full text-xs">Vue.js</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Nuxt.js</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Tailwind CSS</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Firebase</span>
+            </div>
+            <div class="flex space-x-4">
+              <a href="#" class="px-6 py-2 bg-neonPurple bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPurple font-bold flex-1 text-center">
+                查看演示
+              </a>
+              <a href="#" class="px-6 py-2 glass hover:bg-opacity-30 rounded-lg transition duration-300 flex-1 text-center">
+                查看程式碼
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 網站作品卡片 4 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative h-64">
+            <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/abcac539a8764d508db14d6487f6246d~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260224021944865571AE07397F6E7680&rrcfp=f06b921b&x-expires=1774462857&x-signature=u3NmQ0dLwQsrxTOgEzaqFu1q4lg%3D" alt="網站作品" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent flex flex-col justify-end p-6">
+              <span class="px-3 py-1 bg-neonBlue bg-opacity-20 rounded-full text-sm text-neonBlue mb-2">企業網站</span>
+              <h3 class="text-xl font-bold neon-text-blue">科技公司官網</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-300 mb-6">
+              為科技創新公司設計的現代化官網，融合3D元素和動態互動效果，提升品牌形象和用戶體驗。
+            </p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="px-3 py-1 glass rounded-full text-xs">HTML5</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">CSS3</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+              <span class="px-3 py-1 glass rounded-full text-xs">Three.js</span>
+            </div>
+            <div class="flex space-x-4">
+              <a href="#" class="px-6 py-2 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold flex-1 text-center">
+                查看演示
+              </a>
+              <a href="#" class="px-6 py-2 glass hover:bg-opacity-30 rounded-lg transition duration-300 flex-1 text-center">
+                查看程式碼
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WebUI應用部分 -->
+  <section id="webui" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-blue">WebUI應用</h2>
+
+      <!-- WebUI應用卡片網格 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- WebUI應用卡片 1 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1772044939/grok-video-798f47d8-07aa-4cc3-b142-bddacd4de70e_mlkpvt.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-pink">AI圖像產生器</h3>
+          <p class="text-gray-300 mb-6">
+            基於深度學習的圖像產生WebUI，支援文字到圖像轉換，可自訂多種參數產生獨特的藝術作品。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">Python</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Flask</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">TensorFlow</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Stable Diffusion</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonPink bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPink font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+
+        <!-- WebUI應用卡片 2 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771788499/dj2_ja7hsw.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-blue">數據視覺化平台</h3>
+          <p class="text-gray-300 mb-6">
+            強大的數據視覺化WebUI，支援多種數據源接入，提供豐富的圖表類型和互動式儀表板設計。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">React</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">D3.js</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Express</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">MongoDB</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+
+        <!-- WebUI應用卡片 3 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771788500/Djbig_kxfan1.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-purple">音訊處理工具</h3>
+          <p class="text-gray-300 mb-6">
+            線上音訊編輯和處理WebUI，支援音訊剪輯、效果添加、格式轉換等功能，無需安裝專業軟體。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Web Audio API</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Vue.js</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">FFmpeg.wasm</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonPurple bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPurple font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+
+        <!-- WebUI應用卡片 4 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771981295/grok-video-f2f51d12-f576-4368-8912-6adb50be2820_uupoc8.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-pink">3D模型檢視器</h3>
+          <p class="text-gray-300 mb-6">
+            基於WebGL的3D模型線上檢視器，支援多種3D檔案格式，提供模型旋轉、縮放和材質調整功能。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Three.js</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">React</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">GLTF</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonPink bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPink font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+
+        <!-- WebUI應用卡片 5 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771788499/dacae_ryxuma.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-blue">協作白板</h3>
+          <p class="text-gray-300 mb-6">
+            即時協作數位白板WebUI，支援多人同時繪圖、新增便條和文件，適用於遠端團隊協作和腦力激盪。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Socket.io</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Canvas API</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Node.js</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonBlue bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonBlue font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+
+        <!-- WebUI應用卡片 6 -->
+        <div class="card-3d glass rounded-2xl p-6 hover-scale">
+          <div class="w-full h-48 rounded-xl overflow-hidden mb-6">
+            <div class="video-container w-full h-full">
+              <video autoplay loop muted playsinline>
+                <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1771788500/lingkodj3.mp4" type="video/mp4">
+                您的瀏覽器不支援影片播放。
+              </video>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 neon-text-purple">程式碼編輯器</h3>
+          <p class="text-gray-300 mb-6">
+            功能豐富的線上程式碼編輯器WebUI，支援多種程式語言，提供語法高亮、自動補全和即時程式碼執行功能。
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 glass rounded-full text-xs">JavaScript</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">Monaco Editor</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">React</span>
+            <span class="px-3 py-1 glass rounded-full text-xs">WebAssembly</span>
+          </div>
+          <a href="#" class="inline-block px-6 py-3 bg-neonPurple bg-opacity-20 hover:bg-opacity-40 rounded-lg transition duration-300 text-neonPurple font-bold w-full text-center">
+            訪問應用
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YouTube部分 -->
+  <section id="youtube" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-pink">YouTube頻道</h2>
+
+      <!-- YouTube頻道介紹 -->
+      <div class="glass rounded-2xl p-8 mb-12">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/4 mb-8 md:mb-0 flex justify-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-neonPink neon-border-pink">
+              <img src="https://res.cloudinary.com/disfiwvbe/image/upload/v1771167575/tmp22fl6pb5_kiuajr.png" alt="YouTube頻道頭像" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div class="md:w-3/4 md:pl-12">
+            <h3 class="text-2xl font-bold mb-4 neon-text-pink">NERO數位草泥馬少女創作</h3>
+            <p class="mb-6">
+              歡迎來到我的YouTube頻道，這裡分享數位藝術創作、Web開發教學和落後技術探索。訂閱我的頻道，不會得最新的創作技巧和技術分享。
+            </p>
+            <div class="flex flex-wrap gap-6 mb-8">
+              <div class="text-center">
+                <div class="text-2xl font-bold neon-text-blue">987400M+</div>
+                <div class="text-gray-400">訂閱者</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold neon-text-blue">99950M+</div>
+                <div class="text-gray-400">影片</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold neon-text-blue">1500M+</div>
+                <div class="text-gray-400">觀看次數</div>
+              </div>
+            </div>
+            <a href="#" class="inline-flex items-center px-8 py-3 bg-red-600 hover:bg-red-700 rounded-full transition duration-300 font-bold">
+              <i class="fab fa-youtube mr-2"></i> 訂閱頻道
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 最新影片 -->
+      <h3 class="text-2xl font-bold mb-8 neon-text-blue">最新影片</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 影片卡片 1 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative">
+            <div class="aspect-w-16 aspect-h-9">
+              <div class="video-container w-full h-48">
+                <video autoplay loop muted playsinline>
+                  <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1772044054/grok-video-d611265b-9f9d-4320-9c15-809028921b96_1_tapvzp.mp4" type="video/mp4">
+                  您的瀏覽器不支援影片播放。
+                </video>
+              </div>
+            </div>
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              12:34
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-lg font-bold mb-2">如何創造玻璃態UI設計</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              在本教學中，我將展示如何使用HTML、CSS和JavaScript建立現代的玻璃態UI設計，提升網站的視覺效果。
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <img src="https://res.cloudinary.com/disfiwvbe/image/upload/v1771167533/bf6e8064-07db-4a8c-b1a0-0d7359f93875_lfdbv7.png" alt="頻道頭像" class="w-8 h-8 rounded-full mr-2">
+                <span class="text-sm">NERO數位創作</span>
+              </div>
+              <span class="text-gray-400 text-sm">2天前</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 影片卡片 2 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative">
+            <div class="aspect-w-16 aspect-h-9">
+              <div class="video-container w-full h-48">
+                <video autoplay loop muted playsinline>
+                  <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1772191194/1d54f582-962b-4fb0-890b-b0dcc393ac8d_gaemfy.mp4">
+                  您的瀏覽器不支援影片播放。
+                </video>
+              </div>
+            </div>
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              18:22
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-lg font-bold mb-2">Three.js入門教學：建立3D場景</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              從零開始學習Three.js，本教學將教您如何建立基本的3D場景、新增光源和相機，以及實現簡單的互動。
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <img src="https://res.cloudinary.com/disfiwvbe/image/upload/v1771167525/aa6c5704-1e21-46b4-bd50-65edb78135b1_1_s3lguj.png" alt="頻道頭像" class="w-8 h-8 rounded-full mr-2">
+                <span class="text-sm">NERO數位創作</span>
+              </div>
+              <span class="text-gray-400 text-sm">1週前</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 影片卡片 3 -->
+        <div class="card-3d glass rounded-2xl overflow-hidden hover-scale">
+          <div class="relative">
+            <div class="aspect-w-16 aspect-h-9">
+              <div class="video-container w-full h-48">
+                <video autoplay loop muted playsinline>
+                  <source src="https://res.cloudinary.com/disfiwvbe/video/upload/v1772191510/grok-video-4f5e66c9-e610-486c-a3e4-adf108cac203_m1z7r1.mp4" type="video/mp4">
+                  您的瀏覽器不支援影片播放。
+                </video>
+              </div>
+            </div>
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              24:15
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-lg font-bold mb-2">AI生成藝術：使用Stable Diffusion</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              探索AI生成藝術的世界，本教學將展示如何使用Stable Diffusion創作出令人驚嘆的數位藝術作品。
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <img src="https://res.cloudinary.com/disfiwvbe/image/upload/v1771167564/ef72fa93-4ae3-46e5-ac3b-d876f4d73d0e_irxxd1.png" alt="頻道頭像" class="w-8 h-8 rounded-full mr-2">
+                <span class="text-sm">NERO數位創作</span>
+              </div>
+              <span class="text-gray-400 text-sm">2週前</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 查看更多按鈕 -->
+      <div class="mt-12 text-center">
+        <a href="#" class="px-8 py-4 glass hover:bg-opacity-30 rounded-full transition duration-300 font-bold inline-flex items-center">
+          <i class="fab fa-youtube mr-2"></i> 查看更多影片
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 關於我部分 -->
+  <section id="about" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-purple">關於我不會Coding的草泥馬Girl</h2>
+
+      <div class="glass rounded-3xl p-8">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/3 mb-8 md:mb-0 flex justify-center">
+            <img src="https://res.cloudinary.com/disfiwvbe/image/upload/v1771997183/6b69e514a003417e5546e52bb5ee8a20_s4bgbz.png" alt="數位草泥馬藝術家" class="w-64 h-64 object-cover rounded-full border-4 border-neonPurple neon-border-purple">
+          </div>
+          <div class="md:w-2/3 md:pl-12">
+            <h3 class="text-3xl font-bold mb-6 neon-text-pink">草泥馬NERO</h3>
+            <p class="mb-6">
+              我是一名數位草泥馬藝術家和全端開發者，專注於創作視覺衝擊力強的數位藝術作品和創新的Web應用程式。我的創作融合了草泥馬霓虹美學與現代技術，打造出獨特的視覺體驗。
+            </p>
+            <p class="mb-6">
+              我擁有5000年的Web開發草泥馬經驗，唔精通HTML、CSS、JavaScript以及多種前端框架和後端技術。同時，我也是一名數位草泥馬藝術愛好者，擅長使用各種草泥馬創作工具和草泥馬技術創作數位藝術作品。
+            </p>
+            <p class="mb-8">
+              透過這個網站，我希望能夠展示我無咩創作成果，分享唔到我的知識和經驗，並與志同道合土的草泥馬朋友不要建立聯繫。如果你對我的草泥馬作品感興趣，或者有任何合作機會，不歡迎隨時聯絡我。
+            </p>
+
+            <!-- 技能 -->
+            <div class="mb-8">
+              <h4 class="text-xl font-bold mb-4 neon-text-blue">無技能</h4>
+              <div class="flex flex-wrap gap-3">
+                <span class="px-4 py-2 glass rounded-full">HTML5</span>
+                <span class="px-4 py-2 glass rounded-full">CSS3</span>
+                <span class="px-4 py-2 glass rounded-full">JavaScript</span>
+                <span class="px-4 py-2 glass rounded-full">草泥馬​經濟</span>
+                <span class="px-4 py-2 glass rounded-full">草泥馬​育成</span>
+                <span class="px-4 py-2 glass rounded-full">草泥馬​生態研究所</span>
+                <span class="px-4 py-2 glass rounded-full">草泥馬​教育</span>
+                <span class="px-4 py-2 glass rounded-full">數位藝術</span>
+                <span class="px-4 py-2 glass rounded-full">UI/UX設計</span>
+                <span class="px-4 py-2 glass rounded-full">AI生成藝術</span>
+              </div>
+            </div>
+
+            <!-- 聯絡方式 -->
+            <div class="flex space-x-4">
+              <a href="#contact" class="px-6 py-3 bg-neonPink hover:bg-opacity-80 rounded-lg transition duration-300 text-white font-bold">
+                聯絡我無用
+              </a>
+              <a href="#" class="px-6 py-3 glass hover:bg-opacity-30 rounded-lg transition duration-300 flex items-center justify-center">
+                <i class="fas fa-download mr-2"></i> 下載履歷
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 聯絡部分 -->
+  <section id="contact" class="py-20">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-12 text-center neon-text-blue">不要聯絡我</h2>
+
+      <div class="glass rounded-3xl p-8">
+        <div class="flex flex-col md:flex-row">
+          <div class="md:w-1/2 mb-10 md:mb-0 md:pr-8">
+            <h3 class="text-2xl font-bold mb-6 neon-text-pink">無聯絡資訊</h3>
+
+            <div class="space-y-6">
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-neonBlue bg-opacity-20 flex items-center justify-center mr-4">
+                  <i class="fas fa-envelope text-neonBlue"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">電子郵件</h4>
+                  <p class="text-gray-300">lama@nero.digital</p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-neonPink bg-opacity-20 flex items-center justify-center mr-4">
+                  <i class="fas fa-phone-alt text-neonPink"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">電話</h4>
+                  <p class="text-gray-300">+852 3695 9867</p>
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-neonPurple bg-opacity-20 flex items-center justify-center mr-4">
+                  <i class="fas fa-map-marker-alt text-neonPurple"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">地址</h4>
+                  <p class="text-gray-300">香港草泥馬新區數位無創意園區</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-10">
+              <h3 class="text-2xl font-bold mb-6 neon-text-pink">草泥馬社群媒體</h3>
+              <div class="flex space-x-4">
+                <a href="#" class="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-neonBlue hover:bg-opacity-20 transition duration-300">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-neonBlue hover:bg-opacity-20 transition duration-300">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-neonBlue hover:bg-opacity-20 transition duration-300">
+                  <i class="fab fa-behance"></i>
+                </a>
+                <a href="#" class="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-neonBlue hover:bg-opacity-20 transition duration-300">
+                  <i class="fab fa-dribbble"></i>
+                </a>
+                <a href="#" class="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-neonBlue hover:bg-opacity-20 transition duration-300">
+                  <i class="fab fa-github"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:w-1/2">
+            <h3 class="text-2xl font-bold mb-6 neon-text-pink">傳送訊息</h3>
+
+            <form id="contact-form">
+              <div class="mb-6">
+                <label for="name" class="block mb-2 font-medium">您的姓名</label>
+                <input type="text" id="name" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-neonBlue" placeholder="家人們">
+              </div>
+
+              <div class="mb-6">
+                <label for="email" class="block mb-2 font-medium">您的電子郵件</label>
+                <input type="email" id="email" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-neonBlue" placeholder="zhangsan@example.com">
+              </div>
+
+              <div class="mb-6">
+                <label for="subject" class="block mb-2 font-medium">主旨</label>
+                <input type="text" id="subject" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-neonBlue" placeholder="合作諮詢">
+              </div>
+
+              <div class="mb-6">
+                <label for="message" class="block mb-2 font-medium">訊息</label>
+                <textarea id="message" rows="5" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-neonBlue" placeholder="我想諮詢關於網站設計的合作事宜..."></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-4 bg-neonPink hover:bg-opacity-80 rounded-lg transition duration-300 font-bold">
+                傳送訊息
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁腳 -->
+  <footer class="py-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <a href="#" class="text-2xl font-bold neon-text-blue">草泥馬NERO</a>
+          <p class="mt-2 text-gray-400">Lingko© 2026 版權所有</p>
+        </div>
+
+        <div class="flex space-x-8">
+          <a href="#home" class="hover:text-neonBlue transition duration-300">首頁</a>
+          <a href="#gallery" class="hover:text-neonBlue transition duration-300">畫廊</a>
+          <a href="#tools" class="hover:text-neonBlue transition duration-300">工具</a>
+          <a href="#websites" class="hover:text-neonBlue transition duration-300">網站作品</a>
+          <a href="#webui" class="hover:text-neonBlue transition duration-300">WebUI應用</a>
+          <a href="#youtube" class="hover:text-neonBlue transition duration-300">YouTube</a>
+          <a href="#about" class="hover:text-neonBlue transition duration-300">關於我</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 行動端選單切換
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+    // 點擊頁面其他區域自動收起選單
+    document.addEventListener('click', function(e) {
+      // 如果點擊的不是選單按鈕或選單本身，並且選單目前是可見的
+      if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+    // 導覽連結平滑滾動
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          // 關閉行動端選單
+          mobileMenu.classList.add('hidden');
+          // 更新活動導覽連結
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active-nav');
+          });
+          this.classList.add('active-nav');
+        }
+      });
+    });
+    // 聯絡表單提交
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      if (name && email && subject && message) {
+        // 模擬表單提交
+        alert('訊息傳送成功！');
+        this.reset();
+      } else {
+        alert('請填寫所有欄位。');
+      }
+    });
+    // 畫廊篩選功能
+    document.querySelectorAll('.gallery-filter').forEach(filter => {
+      filter.addEventListener('click', function() {
+        // 更新活動篩選按鈕
+        document.querySelectorAll('.gallery-filter').forEach(btn => {
+          btn.classList.remove('active', 'neon-border-blue');
+        });
+        this.classList.add('active', 'neon-border-blue');
+        const filterValue = this.getAttribute('data-filter');
+        // 篩選畫廊項目
+        document.querySelectorAll('.gallery-item').forEach(item => {
+          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+    // 載入更多畫廊作品
+    document.getElementById('load-more-gallery').addEventListener('click', function() {
+      // 模擬載入更多作品
+      alert('載入更多作品功能將在實際專案中實現。');
+    });
+    // 背景動畫與Three.js
+    function initThreeJsBackground() {
+      const container = document.getElementById('canvas-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({
+        alpha: true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+      // 建立粒子
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 2000;
+      const posArray = new Float32Array(particlesCount * 3);
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+      }
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      // 建立材質
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.005,
+        color: 0x00F0FF,
+        transparent: true,
+        opacity: 0.8
+      });
+      // 建立粒子系統
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      // 新增第二個粒子系統（粉色）
+      const particlesGeometry2 = new THREE.BufferGeometry();
+      const posArray2 = new Float32Array(particlesCount * 3);
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray2[i] = (Math.random() - 0.5) * 10;
+      }
+      particlesGeometry2.setAttribute('position', new THREE.BufferAttribute(posArray2, 3));
+      const particlesMaterial2 = new THREE.PointsMaterial({
+        size: 0.005,
+        color: 0xFF00C1,
+        transparent: true,
+        opacity: 0.8
+      });
+      const particlesMesh2 = new THREE.Points(particlesGeometry2, particlesMaterial2);
+      particlesMesh2.position.x = 2;
+      scene.add(particlesMesh2);
+      // 新增第三個粒子系統（紫色）
+      const particlesGeometry3 = new THREE.BufferGeometry();
+      const posArray3 = new Float32Array(particlesCount * 3);
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray3[i] = (Math.random() - 0.5) * 10;
+      }
+      particlesGeometry3.setAttribute('position', new THREE.BufferAttribute(posArray3, 3));
+      const particlesMaterial3 = new THREE.PointsMaterial({
+        size: 0.005,
+        color: 0x9D00FF,
+        transparent: true,
+        opacity: 0.8
+      });
+      const particlesMesh3 = new THREE.Points(particlesGeometry3, particlesMaterial3);
+      particlesMesh3.position.x = -2;
+      scene.add(particlesMesh3);
+      camera.position.z = 5;
+      // 動畫
+      function animate() {
+        requestAnimationFrame(animate);
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh2.rotation.y -= 0.0008;
+        particlesMesh2.rotation.x += 0.0003;
+        particlesMesh3.rotation.y += 0.0006;
+        particlesMesh3.rotation.x -= 0.0004;
+        renderer.render(scene, camera);
+      }
+      animate();
+      // 處理視窗大小變化
+      window.addEventListener('resize', function() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+    // 初始化GSAP動畫
+    function initGSAPAnimations() {
+      // 註冊ScrollTrigger插件
+      gsap.registerPlugin(ScrollTrigger);
+      // 首頁標題動畫
+      gsap.from('#home h1', {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        delay: 0.5
+      });
+      gsap.from('#home p', {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        delay: 0.8
+      });
+      gsap.from('#home .flex.space-x-4', {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        delay: 1.1
+      });
+      // 滾動觸發動畫
+      gsap.utils.toArray('section').forEach(section => {
+        gsap.from(section.querySelector('h2'), {
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%'
+          },
+          opacity: 0,
+          y: 50,
+          duration: 0.8
+        });
+        gsap.from(section.querySelectorAll('.card-3d, .gallery-item'), {
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 70%'
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          stagger: 0.2
+        });
+      });
+    }
+    // 初始化3D卡片效果
+    function initCard3DEffect() {
+      document.querySelectorAll('.card-3d').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 10;
+          const rotateY = (centerX - x) / 10;
+          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'rotateX(0) rotateY(0)';
+        });
+      });
+    }
+    // 當DOM載入完成時初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      initThreeJsBackground();
+      initGSAPAnimations();
+      initCard3DEffect();
+    });
+  </script>
+</body>
+
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
